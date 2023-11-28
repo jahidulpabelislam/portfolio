@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /error/
-Sitemap: https://jahidulpabelislam.com/site-map.xml

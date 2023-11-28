@@ -1,0 +1,96 @@
+/* For all devices */
+.footer {
+    background-color: $light-colour;
+    color: $grey;
+    border-top: 1px solid $light-grey;
+    padding: 18px 0;
+}
+
+.footer__logo {
+    height: 40px;
+    border: 1px solid $brand-colour;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+.footer__links,
+.footer__legal,
+.footer__version {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.footer__link {
+    position: relative;
+    color: $dark-colour;
+
+    &::before {
+        content: "\00a0";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: calc(100% - 12px);
+        height: 1px;
+        border-bottom: transparent solid 1px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    &:last-child {
+        &::before {
+            width: 100%;
+        }
+    }
+
+    &:not(:last-child)::after {
+        content: "|";
+        color: $grey;
+        margin: 0 4px;
+    }
+
+    &:hover,
+    &:focus {
+        color: darken($dark-colour, 10%);
+
+        &::before {
+            border-bottom-color: darken($dark-colour, 10%);
+        }
+    }
+}
+
+/* Only for Desktops */
+@media only screen and (min-width: $desktop-width) {
+    .footer {
+        padding: 34px 0;
+    }
+
+    .footer > .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .footer__logo {
+        order: 4;
+    }
+
+    .footer__links {
+        width: 33%;
+        text-align: left;
+        order: 1;
+    }
+
+    .footer__legal {
+        width: 33%;
+        text-align: right;
+        order: 3;
+    }
+
+    .footer__version {
+        width: 33%;
+        text-align: center;
+        order: 2;
+        margin: 0 0 16px;
+    }
+}

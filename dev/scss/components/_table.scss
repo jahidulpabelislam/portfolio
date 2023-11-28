@@ -1,0 +1,17 @@
+.table {
+    margin: 0 auto 10px;
+    border-color: $dark-colour;
+}
+
+.table__row {
+    border: 1px solid $dark-colour;
+}
+
+.table__col {
+    padding: 6px;
+    border: 1px solid $dark-colour;
+}
+
+.table__col--header {
+    font-weight: 700;
+}

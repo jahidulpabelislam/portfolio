@@ -2,11 +2,11 @@ const gulp = require("gulp");
 
 const HubRegistry = require("gulp-hub");
 
-let srcs = ["./tasks/!(config).js"];
+let srcs = ["./dev/gulpfile.js"];
 
 const env = process.env.NODE_ENV || "production";
 if (env !== "production") {
-    srcs.push("./tasks/dev/*.js");
+    srcs.push("./vendor/jpi/site/dev/gulpfile.js");
 }
 
 const hub = new HubRegistry(srcs);

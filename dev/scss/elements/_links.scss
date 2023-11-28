@@ -1,0 +1,30 @@
+.link {
+    color: $dark-colour;
+    border-bottom: transparent solid 1px;
+}
+
+.link:hover,
+.link:focus {
+    color: darken($dark-colour, 10%);
+    border-bottom-color: darken($dark-colour, 10%);
+}
+
+.link--brand {
+    color: $brand-colour;
+}
+
+.link--brand:hover,
+.link--brand:focus {
+    color: $brand-light-colour;
+    border-bottom-color: $brand-light-colour;
+}
+
+.link--secondary {
+    color: $secondary-colour;
+
+    &:hover,
+    &:focus {
+        color: $secondary-light-colour;
+        border-bottom-color: $secondary-light-colour;
+    }
+}

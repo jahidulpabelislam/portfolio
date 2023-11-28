@@ -1,0 +1,191 @@
+.timeline__viewport {
+    position: relative;
+    overflow: hidden;
+    transition: all 1s ease-in-out;
+    padding: 0 0 40px;
+}
+
+.timeline__items {
+    position: relative;
+    left: 0;
+    transition: left 1.2s ease;
+}
+
+.timeline__item {
+    position: relative;
+    padding: 40px 10px;
+    display: inline-flex;
+    flex-direction: column;
+    flex: 0 0 250px;
+
+    &::before {
+        position: absolute;
+        content: "\00a0";
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: $secondary-colour;
+    }
+
+    &:first-child::before {
+        left: 50%;
+    }
+
+    &:last-child::before {
+        right: 50%;
+    }
+
+    &::after {
+        content: "\00a0";
+        position: absolute;
+        top: 50%;
+        left: calc(50% - 17px);
+        margin-top: -15px;
+        border: 2px solid $dark-colour;
+        border-radius: 50%;
+        background-color: $light-colour;
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: $dark-colour;
+        z-index: 1;
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
+        line-height: 31px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    &.timeline__item--active,
+    &.timeline__item--present {
+        &::after {
+            border-color: $secondary-colour;
+        }
+    }
+
+    > div {
+        height: 100%;
+    }
+
+    &:nth-child(even) {
+        > div {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.timeline__item:nth-child(odd) .timeline__content::before {
+    bottom: -10px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #ffffff;
+}
+
+.timeline__item:nth-child(even) .timeline__content::before {
+    top: -10px;
+    bottom: auto;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #ffffff;
+}
+
+.timeline__item--school::after {
+    content: "\f19d";
+}
+
+.timeline__item--coding::after {
+    content: "\f121";
+}
+
+.timeline__item--baby::after {
+    content: "\f77c";
+}
+
+.timeline__item--work::after {
+    content: "\f108";
+}
+
+.timeline__item--football::after {
+    content: "\f1e3";
+}
+
+.timeline__item--childhood::after {
+    content: "\f1b3";
+}
+
+.timeline__item--food::after {
+    content: "\f2e7";
+}
+
+.timeline__item--film::after {
+    content: "\f008";
+}
+
+.timeline__item--present::after {
+    color: $secondary-colour;
+    box-shadow: 0 0 10px 0 $secondary-colour;
+}
+
+.timeline__content {
+    position: relative;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px 0 transparentize($grey, 0.9);
+
+    .timeline__item:nth-child(even) & {
+        transform: rotate(180deg);
+        margin-top: 15px;
+        margin-bottom: 0;
+    }
+}
+
+.timeline__content::before {
+    content: " ";
+    position: absolute;
+    left: calc(50% - 10px);
+    width: 0;
+    bottom: -10px;
+    z-index: 1;
+}
+
+.timeline__content p {
+    margin: 0;
+}
+
+.timeline__date {
+    font-weight: 700;
+    font-style: italic;
+
+    .timeline__item:nth-child(even) & {
+        transform: rotate(180deg);
+    }
+}
+
+.timeline__navs {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.timeline__nav {
+    padding: 5px;
+    transition: all 0.3s ease;
+}
+
+.timeline__nav svg {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.timeline__nav:not(:disabled):hover,
+.timeline__nav:not(:disabled):focus {
+    box-shadow: 0 0 10px 0 $dark-colour;
+}
+
+.timeline__nav svg path {
+    fill: $dark-colour;
+}

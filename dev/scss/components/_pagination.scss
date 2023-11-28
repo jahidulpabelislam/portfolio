@@ -1,0 +1,29 @@
+.pagination__item {
+    display: inline-block;
+    margin: 2px 8px;
+}
+
+.pagination__link {
+    display: inline-block;
+    min-height: 38px;
+    min-width: 38px;
+    padding: 8px 14px;
+    border-radius: 5px;
+    background: #ffffff;
+    color: $dark-colour;
+    transition: all 0.25s ease-in-out;
+
+    &:hover,
+    &:focus {
+        background: $secondary-colour;
+        box-shadow: 0 0 10px 0 transparentize($dark-colour, 0.8);
+    }
+}
+
+.pagination__link--active,
+.pagination__link--active:hover,
+.pagination__link--active:focus {
+    background: $secondary-colour;
+    cursor: default;
+    box-shadow: none;
+}

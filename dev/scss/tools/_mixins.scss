@@ -1,0 +1,26 @@
+@mixin insta-logo($size) {
+    width: #{$size}px;
+    border-radius: #{$size * 0.222}px;
+
+    i {
+        width: #{$size * 0.736}px;
+        height: #{$size * 0.736}px;
+        border: #{$size * 0.068}px solid #ffffff;
+        border-radius: #{$size * 0.208}px;
+    }
+
+    i::before {
+        width: #{$size * 0.381}px;
+        height: #{$size * 0.381}px;
+        border: #{$size * 0.068}px solid #ffffff;
+        border-radius: #{$size * 0.19}px;
+    }
+
+    i::after {
+        top: #{$size * 0.06}px;
+        right: #{$size * 0.06}px;
+        width: #{$size * 0.09}px;
+        height: #{$size * 0.09}px;
+        border-radius: #{$size * 0.044}px;
+    }
+}

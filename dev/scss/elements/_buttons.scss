@@ -1,0 +1,99 @@
+/* For all devices */
+.button {
+    width: auto;
+    margin: 5px;
+    padding: 6px 12px;
+    background-color: $dark-colour;
+    color: #ffffff;
+    font: inherit;
+    border-radius: 2px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+    &:hover,
+    &:focus {
+        background-color: darken($dark-colour, 5%);
+    }
+}
+
+.button--large {
+    padding: 8px 16px;
+    font-weight: 700;
+}
+
+.button--white {
+    background-color: #ffffff;
+    color: $dark-colour;
+}
+.button--white:hover,
+.button--white:focus {
+    background-color: darken(#ffffff, 1%);
+}
+
+.button--clear {
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.button--brand {
+    background-color: $brand-colour;
+    color: #ffffff;
+
+    &:hover,
+    &:focus {
+        background-color: $brand-light-colour;
+    }
+}
+
+.button--primary {
+    background-color: transparent;
+    color: $brand-colour;
+    border: 2px solid $brand-colour;
+
+    &:hover,
+    &:focus {
+        background-color: $brand-colour;
+        color: #ffffff;
+    }
+}
+
+.button--secondary {
+    background-color: $secondary-colour;
+    color: $dark-colour;
+
+    &:hover,
+    &:focus {
+        background-color: $secondary-light-colour;
+    }
+}
+
+.button--clear:hover,
+.button--clear:focus,
+.button--clear:active,
+.button--clear:active:hover,
+.button--clear:active:focus {
+    background-color: transparent;
+    color: darken(#ffffff, 20%);
+}
+
+a.button {
+    display: inline-block;
+}
+
+.button:disabled {
+    cursor: not-allowed;
+    filter: alpha(opacity=65);
+    opacity: 0.65;
+}
+
+/* Only for Desktops */
+@media only screen and (min-width: $desktop-width) {
+    .button {
+        margin: 7px;
+        padding: 9px 14px;
+    }
+
+    .button--large {
+        font-size: 18px;
+        padding: 12px 24px;
+    }
+}

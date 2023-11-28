@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /error/
+Sitemap: https://jahidulpabelislam.com/site-map.xml

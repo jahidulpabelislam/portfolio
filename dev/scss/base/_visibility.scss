@@ -1,0 +1,24 @@
+.tablet-show,
+.desktop-show {
+    display: none;
+}
+
+@media only screen and (min-width: $tablet-width) {
+    .tablet-hide {
+        display: none;
+    }
+
+    .tablet-show {
+        display: initial;
+    }
+}
+
+@media only screen and (min-width: $desktop-width) {
+    .desktop-hide {
+        display: none;
+    }
+
+    .desktop-show {
+        display: initial;
+    }
+}

@@ -1,0 +1,32 @@
+.portfolio-links {
+    padding: 10px;
+}
+
+.portfolio-links__heading.portfolio-links__heading {
+    margin: 10px 0 0;
+    color: $brand-colour;
+}
+
+.portfolio-links__image {
+    height: 50px;
+    margin: 15px 3px;
+    background: $brand-colour;
+}
+
+@media only screen and (min-width: $tablet-width) {
+    .portfolio-links__heading.portfolio-links__heading {
+        margin-top: 15px;
+    }
+
+    .portfolio-links__image {
+        height: 60px;
+        margin: 20px 10px;
+    }
+}
+
+@media only screen and (min-width: $desktop-width) {
+    .portfolio-links__image {
+        height: 70px;
+        margin: 25px 16px;
+    }
+}

@@ -1,108 +1,114 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * A helper class to use throughout the site.
  * To aid in including common partials for all pages.
  * And handles any page data associated with the page and passed to where needed
- *
- * Developed so it can be used in multiple sites.
- *
- * PHP version 7.1+
- *
- * @version 1.1.2
- * @since Class available since Release: v4.2.0
- * @author Jahidul Pabel Islam <me@jahidulpabelislam.com>
- * @copyright 2010-2019 JPI
  */
 
+namespace App;
+
+use Exception;
+
 class Renderer {
-
-    private $page;
-
-    public function __construct(Page $page) {
-        $this->page = $page;
-    }
 
     private static function trim(string $contents): string {
         return str_replace("\n", "", trim($contents));
     }
 
-    /**
-     * Include the common html head for page/site
-     */
-    public function renderHTMLHead() {
-        $pageId = $this->page->id;
-        $title = $this->page->headTitle ?? $this->page->title ?? "";
-        $description = $this->page->headDescription ?? $this->page->description ?? "";
-
-        include_once(ROOT . "/partials/head.php");
+    public function __construct(private Page $page) {
     }
 
-    /**
-     * Include the common canonical urls meta elements for page/site
-     */
-    public function renderCanonicalURLs() {
-        $pagination = $this->page->pagination ?? [];
-        $currentURL = $this->page->currentURL;
+    public function __call(string $method, array $arguments): void {
+        $partial = substr($method, 6); // Remove 'render'
+        $partial = preg_replace("/\B([A-Z])/", "-$1", $partial); // Convert 'CanonicalUrls' to 'Canonical-Urls'
+        $partial = strtolower($partial); // Convert 'Canonical-Urls' to 'canonical-urls'
+        $template = new Template(ROOT . "/partials/$partial.php", $arguments[0] ?? []);
+        if ($template->exists()) {
+            $template->include();
+            return;
+        }
 
-        include_once(ROOT . "/partials/canonical-urls.php");
+        throw new Exception("No method found for $method");
     }
 
-    /**
-     * Include the common favicons content for page/site
-     */
-    public function renderFavicons() {
-        include_once(ROOT . "/partials/favicons.php");
+    public function renderHtmlStart(): void {
+        echo <<<HTML
+<!DOCTYPE html>
+<html lang="en-GB">
+HTML;
     }
 
-    /**
-     * Include the common html nav content for page/site
-     */
-    public function renderNav() {
-        $pageId = $this->page->id;
-        $currentURL = $this->page->currentURL;
-
-        $defaultTint = "dark";
-
-        $navTint = $this->page->navTint ?? $defaultTint;
-        $navTint = in_array($navTint, Site::VALID_NAV_TINTS) ? $navTint : $defaultTint;
-
-        include_once(ROOT . "/partials/nav.php");
+    public function renderHtmlEnd(): void {
+        echo <<<HTML
+</html>
+HTML;
     }
 
-    /**
-     * Include the common html header content for page/site
-     */
-    public function renderHeader() {
-        $pageId = $this->page->id;
-        $title = $this->page->headerTitle ?? $this->page->title ?? "";
-        $description = $this->page->headerDescription ?? $this->page->description ?? "";
-
-        include_once(ROOT . "/partials/header.php");
+    public function renderBodyStart(): void {
+        echo <<<HTML
+<body>
+HTML;
     }
 
-    /**
-     * Include the common footer content for page/site
-     */
-    public function renderFooter(array $similarLinks = []) {
-        include_once(ROOT . "/partials/footer.php");
+    public function renderBodyEnd(): void {
+        $this->page->renderJSTemplates();
+        $this->page->renderScripts();
+        $this->page->renderInlineJS();
+
+        // Only want tracking for live site
+        if (site()->isProduction()) {
+            ?>
+            <!-- Google Tag Manager (noscript) -->
+            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5PNRKNC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+            <!-- End Google Tag Manager (noscript) -->
+            <?php
+        }
+        echo "</body>";
     }
 
-    /**
-     * Include the common cookie banner content for page/site
-     */
-    public function renderCookieBanner() {
-        include_once(ROOT . "/partials/cookie-banner.php");
+    public function renderPageStart(): void {
+        echo <<<HTML
+<div class="page-container">
+HTML;
     }
 
-    public function renderInlineJS() {
+    public function renderPageEnd(): void {
+        echo "</div>";
+    }
+
+    public function renderContentStart(): void {
+        echo <<<HTML
+<main class="main-content">
+    <div class="main-content__inner">
+HTML;
+    }
+
+    public function renderContentEnd(): void {
+        echo <<<HTML
+    </div>
+</main>
+HTML;
+    }
+
+    public function renderInlineJS(): void {
         $jsGlobals = $this->page->jsGlobals;
         $inlineJS = $this->page->inlineJS;
         $onLoadInlineJS = $this->page->onLoadInlineJS;
 
         $deferredStylesheets = $this->page->deferredStylesheets;
         if (count($deferredStylesheets)) {
-            $deferredStylesheetsString = json_encode($deferredStylesheets);
-            $onLoadInlineJS = "jpi.helpers.loadStylesheets({$deferredStylesheetsString});" . $onLoadInlineJS;
+            $deferredStylesheetsString = [];
+            foreach ($deferredStylesheets as $deferredStylesheet) {
+                $deferredStylesheetsString[] = (string)Site::asset(
+                    $deferredStylesheet["src"],
+                    $deferredStylesheet["version"] ?? null
+                );
+            }
+            $deferredStylesheetsString = json_encode($deferredStylesheetsString);
+            $onLoadInlineJS = "JPI.loadStylesheets($deferredStylesheetsString);" . $onLoadInlineJS;
         }
 
         if (empty($jsGlobals) && empty($inlineJS) && empty($onLoadInlineJS)) {
@@ -112,10 +118,10 @@ class Renderer {
         $js = "";
 
         if (!empty($jsGlobals)) {
-            $js .= "window.jpi = window.jpi || {};";
+            $js .= "var JPI = JPI || {};";
             foreach ($jsGlobals as $globalName => $vars) {
                 $jsVars = json_encode($vars);
-                $js .= "window.jpi.{$globalName} = {$jsVars};";
+                $js .= "JPI.$globalName = $jsVars;";
             }
         }
 
@@ -124,16 +130,16 @@ class Renderer {
         }
 
         if (!empty($onLoadInlineJS)) {
-            $js .= "jQuery(document).on('ready', function() {{$onLoadInlineJS}});";
+            $js .= "jQuery(function() {{$onLoadInlineJS}});";
         }
 
         $js = self::trim($js);
         echo <<<HTML
-            <script type="application/javascript">{$js}</script>
+            <script type="application/javascript">$js</script>
             HTML;
     }
 
-    public function renderScripts() {
+    public function renderScripts(): void {
         $scripts = $this->page->scripts;
 
         if (empty($scripts)) {
@@ -141,12 +147,14 @@ class Renderer {
         }
 
         foreach ($scripts as $script) {
-            $src = addAssetVersion($script["src"], $script["version"]);
-            echo "<script src='{$src}' type='application/javascript'></script>";
+            $src = Site::asset($script["src"], $script["version"]);
+            echo <<<HTML
+                <script src="$src" type="application/javascript"></script>
+                HTML;
         }
     }
 
-    public function renderJSTemplates() {
+    public function renderJSTemplates(): void {
         $jsTemplates = $this->page->jsTemplates;
 
         if (empty($jsTemplates)) {
@@ -156,7 +164,7 @@ class Renderer {
         foreach ($jsTemplates as $name => $template) {
             $template = self::trim($template);
             echo <<<HTML
-                <script type="text/template" id="{$name}-template">{$template}</script>
+                <script type="text/template" id="$name-template">$template</script>
                 HTML;
         }
     }

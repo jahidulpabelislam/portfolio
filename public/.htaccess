@@ -1,0 +1,27 @@
+# Custom error pages
+ErrorDocument 401 /error/
+ErrorDocument 403 /error/
+ErrorDocument 404 /error/
+ErrorDocument 500 /error/
+
+RewriteEngine on
+
+# Only follow the following rewriterules after this block only if file and directory doesn't exist
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule .* - [S=7]
+
+# Add redirects for similar URLS to actual page/URL
+RewriteRule ^about-me/?$ /about/ [R=301,NC,L]
+RewriteRule ^contact-me/?$ /contact/ [R=301,NC,L]
+RewriteRule ^projects/?$ /portfolio/ [R=301,NC,L]
+RewriteRule ^sitemap/?$ /site-map/ [R=301,NC,L]
+RewriteRule ^sitemap.xml?$ /site-map.xml [R=301,NC,L]
+
+# Redirects for old API - used to be located within this project
+RewriteRule ^api/(.*)$ https://api.jahidulpabelislam.com/$1 [R=301,NC,L]
+RewriteRule ^api(.*)$ https://api.jahidulpabelislam.com/$1 [R=301,NC,L] # If no trailing slash
+
+# Redirects for old Links page - used to be located within this project
+RewriteRule ^links/(.*)$ https://links.jahidulpabelislam.com/$1 [R=301,NC,L]
+RewriteRule ^links(.*)$ https://links.jahidulpabelislam.com/$1 [R=301,NC,L] # If no trailing slash

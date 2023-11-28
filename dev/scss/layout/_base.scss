@@ -1,0 +1,35 @@
+/* For all devices */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    text-align: center;
+}
+
+.container {
+    max-width: 100%;
+    padding: 0 15px;
+    margin: auto;
+}
+
+p {
+    margin: 0 0 10px 0;
+}
+
+time {
+    display: block;
+}
+
+img {
+    vertical-align: middle;
+}
+
+/* Only for Desktops */
+@media only screen and (min-width: $desktop-width) {
+    .container {
+        width: $max-width;
+    }
+}

@@ -1,0 +1,102 @@
+@use "sass:math";
+
+.contact-me__column {
+    padding: 30px 15px;
+}
+
+.contact-me__column--header {
+    background: $brand-colour url("/assets/images/contact.jpg?v=2") no-repeat center center scroll;
+    background-size: cover;
+    color: #ffffff;
+}
+
+.contact-me__title {
+    font-size: 46px;
+    line-height: 50px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.contact-me__line-breaker {
+    margin: 30px auto 38px;
+    max-width: 50%;
+}
+
+.contact-form__feedback {
+    display: none;
+    margin-bottom: 20px;
+}
+
+.contact-form__submit {
+    margin: 0;
+    background-color: $green;
+    color: #ffffff;
+
+    &:hover,
+    &:focus {
+        background-color: $green-light;
+    }
+}
+
+.contact-me {
+    .contact-me__item {
+        &:not(:last-child) {
+            margin-bottom: 14px;
+        }
+    }
+
+    .social-link,
+    .social-link:hover,
+    .social-link:focus {
+        .social-link__image {
+            background-color: $secondary-colour;
+        }
+
+        .social-link__text {
+            color: $secondary-colour;
+        }
+    }
+
+    .social-link__text {
+        text-shadow: 2px 2px 3px #000;
+    }
+}
+
+.contact-form__intro {
+    margin: 12px 0;
+}
+
+@media only screen and (min-width: $tablet-width) {
+    .contact-me {
+        display: flex;
+        align-items: center;
+        min-height: calc(100vh - 46px);
+    }
+
+    .contact-me__column--header {
+        display: flex;
+        align-self: stretch;
+        align-items: center;
+        margin-top: -30px;
+        margin-bottom: -30px;
+
+        > div {
+            width: 100%;
+            max-width: math.div($max-width, 2);
+            margin: 0 auto;
+        }
+    }
+
+    .contact-me__column--form {
+        max-width: math.div($max-width, 2);
+        margin: 0;
+        text-align: left;
+    }
+}
+
+
+@media only screen and (min-width: $tablet-width) {
+    .contact-form__intro  {
+        margin-bottom: 36px;
+    }
+}

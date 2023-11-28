@@ -1,169 +1,150 @@
 <?php
 
+declare(strict_types=1);
+
+namespace App;
+
+use Exception;
 use JPI\Utils\Singleton;
+use JPI\Utils\URL;
 
 class Page {
 
     use Singleton;
 
-    private $site;
-    private $data;
+    private Site $site;
 
-    private $renderer;
+    private Renderer $renderer;
+
+    private array $data = [];
 
     private function __construct() {
         $this->site = Site::get();
-
-        $this->data = $this->getGlobalPageData();
-        $this->addScripts($this->getScriptsForPage($this->id));
-
         $this->renderer = new Renderer($this);
+
+        $filePath = realpath(dirname($_SERVER["SCRIPT_FILENAME"]));
+        if ($filePath !== realpath(PUBLIC_ROOT)) {
+            $this->setId(basename($filePath));
+        } else {
+            $this->setId("home");
+        }
     }
 
-    public function __call($method, $arguments) {
-        if (strpos($method, "render") === 0) {
-            if (method_exists($this->renderer, $method)) {
-                return call_user_func_array([$this->renderer, $method], $arguments);
-            }
+    public function setId(string $id): void {
+        $this->data["id"] = $id;
+
+        $this->setUpGlobalData();
+
+        $this->addScript("/assets/js/global.js");
+
+        $pageScript = new File("/assets/js/$id.js");
+        if ($pageScript->exists()) {
+            $this->addScript($pageScript->getPath());
+        }
+    }
+
+    public function __call(string $method, array $arguments): void {
+        if (strpos($method, "render") === 0 && is_callable([$this->renderer, $method])) {
+            call_user_func_array([$this->renderer, $method], $arguments);
+            return;
         }
 
-        throw new Exception("No method found for {$method}");
+        throw new Exception("No method found for $method");
     }
 
-    public function __get(string $field) {
-        return $this->getFromPageData($field);
-    }
+    public function __set(string $field, mixed $value): void {
+        if ($field === "id" && ($this->data[$field] ?? null) !== $value) {
+            $this->setId($value);
+            return;
+        }
 
-    public function __set(string $field, $value) {
         $this->data[$field] = $value;
+    }
+
+    public function __get(string $field): mixed {
+        return $this->data[$field] ?? null;
     }
 
     public function __isset(string $field): bool {
         if (array_key_exists($field, $this->data)) {
-            $value = $this->getFromPageData($field);
-            return isset($value);
+            return isset($this->data[$field]);
         }
 
         return false;
     }
 
-    private function getInlineStylesheetsForPage(string $pageId): array {
-        $cssDir = $this->site->getIsDebug() ? "/assets/css/jpi" : "/assets/css";
-        $cssExtension = $this->site->getIsDebug() ? "css" : "min.css";
-
+    private function getInlineStylesheetsForPage(): array {
         return [
-            "{$cssDir}/above-the-fold.{$cssExtension}",
+            "/assets/css/above-the-fold.css",
         ];
     }
 
-    private function getStylestyleshetsForPage(string $pageId): array  {
+    private function getStylesheetsForPage(): array {
         return [];
     }
 
-    /**
-     * Get the page specific stylesheet/css or the default
-     * @param $pageId string
-     * @return string
-     */
-    private function getDeferredPageStylesheet(string $pageId): string {
-        $cssDir = $this->site->getIsDebug() ? "/assets/css/jpi" : "/assets/css";
-        $cssExtension = $this->site->getIsDebug() ? "css" : "min.css";
+    public function getDeferredStylesheetsForPage(): array {
+        $pageId = $this->data["id"];
 
-        // Some pages (like `Links`) may use its own css file
-        // so figure out if one exists to use, else use the main one
-        $cssSrc = "{$cssDir}/{$pageId}.{$cssExtension}";
-        if (!(new File($cssSrc))->exists()) {
-            $cssSrc = "{$cssDir}/main.{$cssExtension}";
-        }
-
-        return addAssetVersion($cssSrc);
-    }
-
-    public function getDeferredStylesheetsForPage(string $pageId): array {
         $stylesheets = [
-            $this->getDeferredPageStylesheet($pageId)
+            ["src" => "/assets/css/global.css"],
         ];
+
+        $pageScript = new File("/assets/css/$pageId.css");
+        if ($pageScript->exists()) {
+            $stylesheets[] = ["src" => $pageScript->getPath()];
+        }
 
         // Only some pages use Font Awesome, so only add if it uses it
         $pagesUsingFA = [
-            "home", "projects", "about", "contact",
+            "home", "portfolio",
         ];
         if (in_array($pageId, $pagesUsingFA)) {
-            $stylesheets[] = addAssetVersion("/assets/css/third-party/font-awesome.min.css", "5.10.0");
+            $stylesheets[] = [
+                "src" => "/assets/css/third-party/font-awesome.min.css",
+                "version" => "5.10.0",
+            ];
         }
 
         return $stylesheets;
     }
 
-    private function getScriptsForPage(string $pageId): array {
-        // Either add compiled js file(s) for whole page, or include individual files if debug is specified
-        $scripts = [["src" => "/assets/js/main.min.js"]];
-        if ($this->site->getIsDebug()) {
-            $scripts = [
-                ["src" => "/assets/js/third-party/jquery.min.js", "ver" => "1.11.3"],
-                ["src" => "/assets/js/third-party/waypoint.min.js", "ver" => "1.6.2"],
-                ["src" => "/assets/js/third-party/jquery.countTo.js", "ver" => "1.2.0"],
-                ["src" => "/assets/js/jpi/expanded-slide-show.js"],
-                ["src" => "/assets/js/jpi/slide-show.js"],
-                ["src" => "/assets/js/jpi/helpers.js"],
-                ["src" => "/assets/js/jpi/templating.js"],
-                ["src" => "/assets/js/jpi/ajax.js"],
-                ["src" => "/assets/js/jpi/modal.js"],
-                ["src" => "/assets/js/jpi/projects.js"],
-                ["src" => "/assets/js/jpi/home.js"],
-                ["src" => "/assets/js/jpi/contact-form.js"],
-                ["src" => "/assets/js/jpi/nav.js"],
-                ["src" => "/assets/js/jpi/cookie-banner.js"],
-                ["src" => "/assets/js/jpi/main.js"],
-            ];
-        }
-
-        return $scripts;
-    }
-
-    private function getGlobalPageData(): array {
-        $pageId = "home";
+    private function setUpGlobalData(): void {
         $url = "/";
 
         $filePath = realpath(dirname($_SERVER["SCRIPT_FILENAME"]));
-        if ($filePath !== ROOT) {
-            $pageId = basename($filePath);
-
-            $path = dirname($_SERVER["SCRIPT_NAME"]);
-            $url = turnPathToURL($path);
+        if ($filePath !== realpath(PUBLIC_ROOT)) {
+            $url = dirname($_SERVER["SCRIPT_NAME"]) . "/";
         }
 
-        $globalPageData = [
-            "id" => $pageId,
-            "currentURL" => $this->site->getURL($url, false),
-            "inlineStylesheets" => $this->getInlineStylesheetsForPage($pageId),
-            "stylesheets" => $this->getStylestyleshetsForPage($pageId),
-            "deferredStylesheets" => $this->getDeferredStylesheetsForPage($pageId),
-            "jsGlobals" => [
-                "css" => ["tabletWidth" => 768],
-            ],
-            "scripts" => [],
-            "inlineJS" => "",
-            "onLoadInlineJS" => "",
-            "jsTemplates" => [],
+        $this->data["indexed"] = $this->site->isProduction() || $this->site->isDevelopment();
+        $this->data["currentURL"] = $this->site->makeURL($url);
+        $this->data["inlineStylesheets"] = $this->getInlineStylesheetsForPage();
+        $this->data["stylesheets"] = $this->getStylesheetsForPage();
+        $this->data["deferredStylesheets"] = $this->getDeferredStylesheetsForPage();
+        $this->data["jsGlobals"] = [
+            "breakpoints" => load(JPI_SITE_ROOT . "/config/breakpoints.json", false)->getArray(),
         ];
-
-        return $globalPageData;
+        $this->data["scripts"] = [];
+        $this->data["inlineJS"] = "";
+        $this->data["onLoadInlineJS"] = "";
+        $this->data["jsTemplates"] = [];
     }
 
-    public function addPageData(array $newPageData) {
+    public function addPageData(array $newPageData): void {
         $this->data = array_replace_recursive($this->data, $newPageData);
     }
 
-    public function getFromPageData(string $field) {
-        return $this->data[$field] ?? null;
+    public function addJSGlobal(string $global, ?string $subKey, mixed $value): void {
+        if ($subKey) {
+            $this->data["jsGlobals"][$global][$subKey] = $value;
+        }
+        else {
+            $this->data["jsGlobals"][$global] = $value;
+        }
     }
 
-    public function addJSGlobal(string $global, string $key, $value) {
-        $this->data["jsGlobals"][$global][$key] = $value;
-    }
-
-    public function addInlineJS(string $code, bool $isOnLoad = false) {
+    public function addInlineJS(string $code, bool $isOnLoad = false): void {
         $code = trim($code);
         if ($isOnLoad) {
             $this->data["onLoadInlineJS"] .= $code;
@@ -173,11 +154,11 @@ class Page {
         }
     }
 
-    public function addScript(string $src, string $version = null) {
+    public function addScript(URL|string $src, string $version = null): void {
         $this->data["scripts"][] = ["src" => $src, "version" => $version];
     }
 
-    public function addScripts(array $scripts) {
+    public function addScripts(array $scripts): void {
         foreach ($scripts as $script) {
             $src = $script["src"];
             $version = $script["ver"] ?? null;
@@ -185,7 +166,7 @@ class Page {
         }
     }
 
-    public function addJSTemplate(string $name, string $template) {
+    public function addJSTemplate(string $name, string $template): void {
         $this->data["jsTemplates"][$name] = $template;
     }
 }

@@ -1,0 +1,25 @@
+/*
+ * Any css for many templates and/or components.
+ */
+
+.screen-reader-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+.similar-links.similar-links {
+    padding: 18px 0;
+}
+
+/* Only for Desktops */
+@media only screen and (min-width: $desktop-width) {
+    .similar-links.similar-links > .container {
+        flex-direction: row-reverse;
+    }
+}

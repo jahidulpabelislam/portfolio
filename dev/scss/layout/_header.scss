@@ -1,0 +1,247 @@
+/* For all devices */
+.header {
+    height: 100vh;
+    color: #ffffff;
+    background: $brand-colour url("/assets/images/work.jpg?v=2") no-repeat center center scroll;
+    background-size: cover;
+}
+.header--401,
+.header--403,
+.header--404 {
+    background-image: url("/assets/images/mistake.jpg?v=2");
+}
+.header--500 {
+    background-image: url("/assets/images/500.jpg?v=2");
+}
+.header--home {
+    background-image: url("/assets/images/laptop.jpg?v=2");
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+
+        > div {
+            width: 100%;
+
+            &:first-child {
+                order: 2;
+            }
+        }
+    }
+}
+
+.header--portfolio {
+    background-image: url("/assets/images/projects.jpg?v=2");
+}
+
+.header__overlay {
+    display: flex;
+    height: 100%;
+    background: transparentize($dark-colour, 0.85);
+}
+
+.header__title {
+    text-shadow: 2px 2px 3px #000000;
+    font-size: 42px;
+    font-weight: bold;
+    line-height: 48px;
+    margin-bottom: 26px;
+}
+
+.header__type-writer-1 {
+    animation: type-writer-text-1;
+}
+
+.header__type-writer-2 {
+    animation: type-writer-text-2;
+}
+
+.header__type-writer-1,
+.header__type-writer-2 {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    animation-duration: 22s;
+    animation-timing-function: steps(22, end);
+    animation-iteration-count: infinite;
+
+    @media only screen and (min-width: $tablet-width) {
+        display: inline-block;
+    }
+
+    &::after {
+        content: "|";
+        position: absolute;
+        right: 0;
+        animation: caret infinite;
+        animation-duration: 1s;
+        animation-timing-function: steps(1, end);
+        text-shadow: none;
+        width: 5px;
+    }
+}
+
+@keyframes type-writer-text-1 {
+    0%, 50%, 100% {
+        width: 0;
+    }
+    10%, 40% {
+        width: 556px;
+    }
+}
+
+@keyframes type-writer-text-2 {
+    0%, 50%, 100% {
+        width: 0;
+    }
+    60%, 90% {
+        width: 576px;
+    }
+}
+
+@keyframes caret {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.header__line-breaker {
+    margin: 0 auto 26px;
+    max-width: 50%;
+}
+
+.header__description {
+    text-shadow: 2px 2px 3px #000000;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 26px;
+    margin: 0 0 26px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.header__links {
+    margin: 0;
+
+    .social-link {
+        display: inline-block;
+        margin: 8px;
+    }
+}
+
+.header__image {
+    height: auto;
+    width: 200px;
+    border-radius: 50%;
+    align-self: flex-end;
+}
+
+.header__scroll-to-content {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    margin-left: -18px;
+    padding: 0;
+    border-radius: 50%;
+    opacity: 0.8;
+    cursor: pointer;
+    animation: bounce 1.5s linear infinite;
+}
+
+.header__scroll-to-content:hover,
+.header__scroll-to-content:focus {
+    opacity: 1;
+    background: transparentize($light-colour, 0.9);
+}
+
+.header__scroll-to-content svg {
+    width: 36px;
+    height: 36px;
+}
+
+/* Only for Tablets & Desktops */
+@media only screen and (min-width: $tablet-width) {
+    .header__title {
+        font-size: 50px;
+        line-height: 52px;
+        margin-bottom: 32px;
+    }
+
+    .header__line-breaker {
+        margin-bottom: 32px;
+    }
+
+    .header__description {
+        font-size: 26px;
+        line-height: 28px;
+        margin-bottom: 32px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .header__scroll-to-content {
+        margin-left: -20px;
+    }
+
+    .header__scroll-to-content svg {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Only for Desktops */
+@media only screen and (min-width: $desktop-width) {
+    .header {
+        background-attachment: fixed;
+    }
+
+    .header--home {
+        text-align: left;
+
+        .container {
+            > div {
+                width: 50%;
+
+                &:first-child {
+                    order: unset;
+                }
+
+                &:last-child {
+                    text-align: right;
+                }
+            }
+        }
+
+        .header__links .social-link {
+            margin: 0 8px 8px 0;
+        }
+    }
+
+    .header__scroll-to-content {
+        margin-left: -25px;
+    }
+
+    .header__scroll-to-content svg {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@keyframes bounce {
+    0% {
+        bottom: 24px;
+    }
+    50% {
+        bottom: 36px;
+    }
+    100% {
+        bottom: 24px;
+    }
+}

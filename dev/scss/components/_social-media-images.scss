@@ -1,0 +1,80 @@
+/* For all devices */
+.social-link__image {
+    height: 40px;
+    background-color: #000000;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+}
+
+.social-link__text {
+    display: inline-block;
+    font-weight: 700;
+    transition: all 0.3s ease-in-out;
+}
+.social-link:hover,
+.social-link:focus {
+    .social-link__text {
+        text-decoration: underline;
+        color: $brand-colour;
+    }
+
+    .social-link__image {
+        background: $brand-colour;
+    }
+
+    &.social-link--instagram {
+        .social-link__image {
+            box-shadow: 0 0 10px 0 rgba(51, 51, 51, 0.4);
+        }
+    }
+}
+
+.social-link--packagist .social-link__image,
+.social-link--github .social-link__image {
+    border-radius: 50%;
+}
+
+// Based on styling from https://codepen.io/anon/pen/xdXNjw
+.social-link--instagram .social-link__image {
+    @include insta-logo(40);
+
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+
+    i {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+    }
+
+    i::before {
+        content: "\00a0";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+    }
+
+    i::after {
+        content: "\00a0";
+        position: absolute;
+        background: #ffffff;
+    }
+}
+
+/* Only for Desktops */
+@media only screen and (min-width: $desktop-width) {
+    .social-link__image {
+        height: 50px;
+    }
+
+    .social-link--instagram .social-link__image {
+        @include insta-logo(50);
+    }
+}

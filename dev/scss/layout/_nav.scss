@@ -1,0 +1,121 @@
+.nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
+    transition: background-color 0.7s ease-in-out;
+    background-color: transparentize(#ffffff, 0.92);
+}
+
+.nav--scrolled {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px 0 $dark-colour;
+}
+
+.nav__container {
+    display: flex;
+}
+
+.nav__logo-container {
+    flex: 1;
+    text-align: left;
+}
+
+.nav__logo {
+    height: 38px;
+    margin: 4px 15px 4px 0;
+    position: relative;
+    display: inline-block;
+    background: transparent;
+
+    img {
+        height: 100%;
+        width: auto;
+        opacity: 1;
+
+        border-radius: 50%;
+        border: 1px solid transparent;
+    }
+}
+
+.nav__logo.nav__logo--active,
+.nav__logo:hover,
+.nav__logo:focus {
+    img {
+        box-shadow: none;
+        border-color: $brand-colour;
+    }
+}
+
+.nav__link {
+    display: block;
+    padding: 14px 0 14px 18px;
+    color: #ffffff;
+    text-align: center;
+
+    .nav--scrolled & {
+        color: $dark-colour;
+    }
+}
+
+.nav__link--active.nav__link--active.nav__link--active {
+    color: $brand-colour;
+}
+
+.nav__link:hover,
+.nav__link:focus {
+    color: $brand-colour;
+}
+
+/* For Tablets & Desktops */
+@media only screen and (min-width: $tablet-width) {
+    .nav {
+        margin: 0;
+    }
+
+    .nav__header {
+        padding: 0;
+    }
+
+    .nav__links {
+        border-top: 0;
+        text-align: right;
+    }
+
+    .nav__item {
+        display: inline-block;
+    }
+
+    .nav__link {
+        position: relative;
+        margin: 8px 0 8px 24px;
+        padding: 5px 0;
+
+        &::after {
+            content: "\00a0";
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            width: 0;
+            height: 1.5px;
+            transition: all 0.3s ease-in-out;
+            transform: translateX(-50%);
+        }
+    }
+
+    .nav__link:hover,
+    .nav__link:focus,
+    .nav__link--active {
+        color: #ffffff;
+
+        .nav--scrolled & {
+            color: $dark-colour;
+        }
+
+        &::after {
+            width: 32px;
+            background: $brand-colour;
+        }
+    }
+}
